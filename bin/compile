@@ -40,8 +40,13 @@ if [ -d "$CACHE_DIR/flutter" ]; then
   print "Restoring Flutter SDK from CACHE"
   cp -R $CACHE_DIR/flutter $BUILD_DIR
 else
-  print "Installing SDK from Github repository."
-  git clone https://github.com/flutter/flutter.git --quiet
+  if [ -n "$FLUTTER_VERSION" ]; then
+    print "Installing specific SDK from Github repository."
+    git clone -b $FLUTTER_VERSION https://github.com/flutter/flutter.git --quiet
+  else
+    print "Installing SDK from Github repository."
+    git clone https://github.com/flutter/flutter.git --quiet
+  fi
 fi
 
 # Check if FLUTTER_VERSION variables is set.

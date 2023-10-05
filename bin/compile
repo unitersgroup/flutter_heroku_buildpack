@@ -54,7 +54,12 @@ if [ -n "$FLUTTER_VERSION" ]; then
   print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
   flutter/bin/flutter channel stable
   flutter/bin/flutter upgrade
+  flutter/bin/flutter --machine --version >flutter.json
+  FLUTTER_INSTALLED_VERSION=$(grep -o '"frameworkVersion": *"[^"]*' flutter.json | grep -o '[^"]*$')
+  print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
   flutter/bin/flutter downgrade v3.7.12
+  flutter/bin/flutter --machine --version >flutter.json
+  FLUTTER_INSTALLED_VERSION=$(grep -o '"frameworkVersion": *"[^"]*' flutter.json | grep -o '[^"]*$')
   print "Installed222 SDK version:: $FLUTTER_INSTALLED_VERSION"
   if [ "$FLUTTER_VERSION" != "$FLUTTER_INSTALLED_VERSION" ]; then
     print "Installing Flutter SDK version : $FLUTTER_VERSION"

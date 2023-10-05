@@ -52,6 +52,7 @@ if [ -n "$FLUTTER_VERSION" ]; then
 
   # Check if the FLUTTER_VERSION is the same with the installed one.
   print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
+  flutter/bin/flutter channel stable
   flutter/bin/flutter downgrade v3.7.12
   if [ "$FLUTTER_VERSION" != "$FLUTTER_INSTALLED_VERSION" ]; then
     print "Installing Flutter SDK version : $FLUTTER_VERSION"

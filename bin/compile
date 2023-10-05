@@ -36,13 +36,18 @@ mkdir -p $CACHE_DIR
 
 cd $BUILD_DIR
 
+if [ -d "$CACHE_DIR/flutter" ]; then
+  print "Restoring Flutter SDK from CACHE"
+  cp -R $CACHE_DIR/flutter $BUILD_DIR
+else
   if [ -n "$FLUTTER_VERSION" ]; then
-    print "Installing specific SDK from Github repository. $FLUTTER_VERSION"
+    print "Installing specific SDK from Github repository."
     git clone -b $FLUTTER_VERSION https://github.com/flutter/flutter.git --quiet
   else
     print "Installing SDK from Github repository."
     git clone https://github.com/flutter/flutter.git --quiet
   fi
+fi
 
 # Check if FLUTTER_VERSION variables is set.
 if [ -n "$FLUTTER_VERSION" ]; then
@@ -51,16 +56,6 @@ if [ -n "$FLUTTER_VERSION" ]; then
   FLUTTER_INSTALLED_VERSION=$(grep -o '"frameworkVersion": *"[^"]*' flutter.json | grep -o '[^"]*$')
 
   # Check if the FLUTTER_VERSION is the same with the installed one.
-  print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
-  flutter/bin/flutter channel stable
-  flutter/bin/flutter upgrade
-  flutter/bin/flutter --machine --version >flutter.json
-  FLUTTER_INSTALLED_VERSION=$(grep -o '"frameworkVersion": *"[^"]*' flutter.json | grep -o '[^"]*$')
-  print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
-  flutter/bin/flutter downgrade v3.7.12
-  flutter/bin/flutter --machine --version >flutter.json
-  FLUTTER_INSTALLED_VERSION=$(grep -o '"frameworkVersion": *"[^"]*' flutter.json | grep -o '[^"]*$')
-  print "Installed222 SDK version:: $FLUTTER_INSTALLED_VERSION"
   if [ "$FLUTTER_VERSION" != "$FLUTTER_INSTALLED_VERSION" ]; then
     print "Installing Flutter SDK version : $FLUTTER_VERSION"
     flutter/bin/flutter version $FLUTTER_VERSION --quiet | indent
@@ -126,12 +121,17 @@ fi
 # Is taken from my Github repo because some variables need to be changed every run
 # like PORT from environment.
 
+if [ -d "$CACHE_DIR/.pub-cache/" ]; then
+  print "dhttpd Found in cache. Restoring."
+  cp -R $CACHE_DIR/.pub-cache/* $PUB_CACHE
+else
   print "Getting dhttpd to run web service."
   $BUILD_DIR/dart-sdk/bin/dart pub global activate -sgit https://github.com/diezep/dhttpd.git | indent
 
-  print "Finished getting dhtppd to run web service."
+  print "Getting dhtppd to run web service."
   mkdir -p $CACHE_DIR/.pub-cache/
   cp -R $PUB_CACHE/* $CACHE_DIR/.pub-cache/
+fi
 
 # Moving to the build, after running the compile. All will be deleted and removed to app directory.
 # Copying the result, the files will be kept in storage.

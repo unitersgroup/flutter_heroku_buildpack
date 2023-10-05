@@ -36,6 +36,10 @@ mkdir -p $CACHE_DIR
 
 cd $BUILD_DIR
 
+if [ -d "$CACHE_DIR/flutter" ]; then
+  print "Restoring Flutter SDK from CACHE"
+  cp -R $CACHE_DIR/flutter $BUILD_DIR
+else
   if [ -n "$FLUTTER_VERSION" ]; then
     print "Installing specific SDK from Github repository."
     git clone -b $FLUTTER_VERSION https://github.com/flutter/flutter.git --quiet
@@ -43,6 +47,7 @@ cd $BUILD_DIR
     print "Installing SDK from Github repository."
     git clone https://github.com/flutter/flutter.git --quiet
   fi
+fi
 
 # Check if FLUTTER_VERSION variables is set.
 if [ -n "$FLUTTER_VERSION" ]; then
@@ -117,9 +122,9 @@ fi
 # like PORT from environment.
 
   print "Getting dhttpd to run web service."
-  $BUILD_DIR/dart-sdk/bin/dart pub global activate -sgit https://github.com/unitersgroup/flutter_dhttpd.git | indent
+  $BUILD_DIR/dart-sdk/bin/dart pub global activate -sgit https://github.com/diezep/dhttpd.git | indent
 
-  print "Getting dhtppd to run web service."
+  print "Finished etting dhtppd to run web service."
   mkdir -p $CACHE_DIR/.pub-cache/
   cp -R $PUB_CACHE/* $CACHE_DIR/.pub-cache/
 

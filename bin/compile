@@ -51,11 +51,12 @@ if [ -n "$FLUTTER_VERSION" ]; then
   FLUTTER_INSTALLED_VERSION=$(grep -o '"frameworkVersion": *"[^"]*' flutter.json | grep -o '[^"]*$')
 
   # Check if the FLUTTER_VERSION is the same with the installed one.
- print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
-  # if [ "$FLUTTER_VERSION" != "$FLUTTER_INSTALLED_VERSION" ]; then
+  print "Installed SDK version:: $FLUTTER_INSTALLED_VERSION"
+  flutter/bin/flutter downgrade v3.7.12
+  if [ "$FLUTTER_VERSION" != "$FLUTTER_INSTALLED_VERSION" ]; then
     print "Installing Flutter SDK version : $FLUTTER_VERSION"
     flutter/bin/flutter version $FLUTTER_VERSION --quiet | indent
-  # fi
+  fi
   rm flutter.json
 
 else
